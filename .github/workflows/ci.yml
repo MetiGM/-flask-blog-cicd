@@ -34,7 +34,7 @@ jobs:
           echo "--- sonar-project.properties ---"
           cat sonar-project.properties
           echo "--- SonarCloud Project URL ---"
-          echo "https://sonarcloud.io/project/overview?id=MetiGM:flask-blog-cicd"
+          echo "https://sonarcloud.io/project/overview?id=MetiGM%3Aflask-blog-cicd"
 
       # Step 6: Run SonarQube Scan
       - name: SonarQube Scan
