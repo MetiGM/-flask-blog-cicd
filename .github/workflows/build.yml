@@ -1,0 +1,41 @@
+name: Security Analysis
+on:
+  push:
+    branches: [main, vulnerable]
+  pull_request:
+
+jobs:
+  sonarqube:
+    name: SonarQube Analysis
+    runs-on: ubuntu-latest  
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Required for proper analysis
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest pytest-cov
+
+      - name: Run tests with coverage
+        run: |
+          pytest --cov=app --cov-report=xml:coverage.xml tests/
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v4
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=MetiGM:flask-blog-cicd
+            -Dsonar.organization=metigm
+            -Dsonar.python.coverage.reportPaths=coverage.xml
+            -Dsonar.analysis.automaticScan=true
+            -Dsonar.scm.disabled=true
+            -Dsonar.qualitygate.wait=${{ github.ref == 'refs/heads/main' }}
