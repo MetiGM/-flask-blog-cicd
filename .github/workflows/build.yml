@@ -27,7 +27,7 @@ jobs:
           pytest --cov=app --cov-report=xml:coverage.xml tests/
 
       - name: Upload coverage report
-        uses: actions/upload-artifact@v4  # Updated to v4
+        uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: coverage.xml
@@ -42,7 +42,7 @@ jobs:
           fetch-depth: 0
 
       - name: Download coverage report
-        uses: actions/download-artifact@v4  # Updated to v4
+        uses: actions/download-artifact@v4
         with:
           name: coverage-report
           path: .
@@ -77,15 +77,16 @@ jobs:
       - name: Start Flask app
         run: |
           nohup python run.py > flask.log 2>&1 &
-          echo "Waiting for Flask to start..."
-          for i in {1..15}; do
+          echo "Waiting for Flask to start (max 60 seconds)..."
+          for i in {1..30}; do
             if curl -s -o /dev/null http://localhost:5000; then
-              echo "Flask app is running!"
+              echo "Flask app started successfully after $((i*2)) seconds"
               exit 0
             fi
             sleep 2
           done
-          echo "Failed to start Flask app"
+          echo "::error::Failed to start Flask app - check flask.log"
+          cat flask.log
           exit 1
 
       - name: Run OWASP ZAP Scan
@@ -100,8 +101,12 @@ jobs:
           fail_action: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Upload ZAP results
-        uses: actions/upload-artifact@v4  # Updated to v4
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: zap-results
           path: zap-results.xml
+
+      - name: Stop Flask app
+        if: always()
+        run: pkill -f "python run.py" || true
