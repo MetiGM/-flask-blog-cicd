@@ -1,14 +1,6 @@
-from app import create_app, db
-from app.models import Post, User
+from app import create_app
 
 app = create_app()
 
-@app.shell_context_processor
-def make_shell_context():
-    return {'db': db, 'User': User, 'Post': Post}
-
-if __name__ == '__main__':
-    # Initialize database tables (remove in production)
-    with app.app_context():
-        db.create_all()
-    app.run(host='0.0.0.0', port=5000, debug=True)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)

@@ -1,12 +1,22 @@
-import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
-app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY', 'insecure-secret-key')  # Use environment variable
-db = SQLAlchemy(app)
+db = SQLAlchemy()
 
-# Import models here to avoid circular imports
-from app.models import Post, User
-from app import routes
+def create_app():
+    app = Flask(__name__)
+    app.config.from_object('app.config.Config')
+    
+    db.init_app(app)
+    
+    with app.app_context():
+        # Import parts of our application
+        from .routes import main_routes  # Example route import
+        
+        # Register Blueprints
+        app.register_blueprint(main_routes)
+        
+        # Create tables for our models
+        db.create_all()
+    
+    return app
