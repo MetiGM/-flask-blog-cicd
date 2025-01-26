@@ -29,8 +29,6 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-          SONAR_PROJECT_KEY: MetiGM_-flask-blog-cicd  # Use the confirmed project key
-          SONAR_ORGANIZATION: MetiGM                  # Use the organization key
 
       - name: Start Flask app
         run: |
