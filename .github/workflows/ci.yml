@@ -24,6 +24,15 @@ jobs:
         run: |
           python -m pytest tests/
 
+      - name: Debug Environment Variables
+        run: |
+          echo "SONAR_PROJECT_KEY: $SONAR_PROJECT_KEY"
+          echo "SONAR_ORGANIZATION: $SONAR_ORGANIZATION"
+          echo "SONAR_TOKEN: $SONAR_TOKEN"
+          echo "SONAR_HOST_URL: $SONAR_HOST_URL"
+          echo "Contents of sonar-project.properties:"
+          cat sonar-project.properties
+
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@master
         env:
