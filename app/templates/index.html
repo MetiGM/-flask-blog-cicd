@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="home-container">
+    <h1>Blog Posts</h1>
+    <a href="{{ url_for('add_post') }}" class="btn btn-primary">Add Post</a>
+    {% for post in posts %}
+        <div class="post">
+            <h3>{{ post.title }}</h3>
+            <p>{{ post.content }}</p>
+            <form action="{{ url_for('delete_post', post_id=post.id) }}" method="POST">
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
