@@ -27,16 +27,19 @@ jobs:
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@master
         env:
-          SONAR_TOKEN:  ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_PROJECT_KEY:        
+          SONAR_ORGANIZATION: metigm
+          
+        
 
       - name: Start Flask app
         run: |
           python run.py &
-        
+
       - name: OWASP ZAP Scan
         uses: zaproxy/action-full-scan@v0.6.0
         with:
-         target: 'http://localhost:5000'
-         docker_name: 'owasp/zap2docker-stable'
-        
+          target: 'http://localhost:5000'
+          docker_name: 'owasp/zap2docker-stable'
