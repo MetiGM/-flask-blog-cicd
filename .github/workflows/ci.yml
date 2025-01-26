@@ -39,12 +39,15 @@ jobs:
       # Step 6: Run SonarQube Scan
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@master
+        with:
+          args: >
+            -Dsonar.projectKey=MetiGM:flask-blog-cicd
+            -Dsonar.organization=metigm
+            -Dsonar.python.version=3.12
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-          SONAR_PROJECT_KEY: MetiGM:flask-blog-cicd  
-          SONAR_ORGANIZATION: metigm                
-          
+
       # Step 7: Start Flask app (for OWASP ZAP Scan)
       - name: Start Flask app
         run: |
