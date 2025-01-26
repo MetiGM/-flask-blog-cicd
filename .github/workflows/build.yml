@@ -19,17 +19,15 @@ jobs:
         run: |
           pip install -r requirements.txt
           pip install pytest pytest-cov
-          # If your project has a setup.py/pyproject.toml, uncomment:
-          # pip install -e .
 
       - name: Run tests with coverage
         env:
-          PYTHONPATH: ${{ github.workspace }}  # Critical fix here
+          PYTHONPATH: ${{ github.workspace }}
         run: |
           pytest --cov=app --cov-report=xml:coverage.xml tests/
 
       - name: Upload coverage report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4  # Updated to v4
         with:
           name: coverage-report
           path: coverage.xml
@@ -44,7 +42,7 @@ jobs:
           fetch-depth: 0
 
       - name: Download coverage report
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4  # Updated to v4
         with:
           name: coverage-report
           path: .
@@ -60,7 +58,7 @@ jobs:
             -Dsonar.python.coverage.reportPaths=coverage.xml
             -Dsonar.qualitygate.wait=${{ github.ref == 'refs/heads/main' }}
             -Dsonar.branch.name=${{ github.ref_name }}
-            -Dsonar.branch.target=main
+            ${{ github.ref != 'refs/heads/main' && '-Dsonar.branch.target=main' || '' }}
 
   dynamic-scan:
     needs: build-and-test
@@ -78,9 +76,17 @@ jobs:
 
       - name: Start Flask app
         run: |
-          python run.py &
-          sleep 15
-          curl --retry 10 --retry-delay 5 --retry-connrefused http://localhost:5000
+          nohup python run.py > flask.log 2>&1 &
+          echo "Waiting for Flask to start..."
+          for i in {1..15}; do
+            if curl -s -o /dev/null http://localhost:5000; then
+              echo "Flask app is running!"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Failed to start Flask app"
+          exit 1
 
       - name: Run OWASP ZAP Scan
         uses: zaproxy/action-full-scan@v0.6.0
@@ -94,7 +100,7 @@ jobs:
           fail_action: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Upload ZAP results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4  # Updated to v4
         if: always()
         with:
           name: zap-results
