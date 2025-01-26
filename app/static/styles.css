@@ -132,7 +132,7 @@ textarea:focus {
     outline: none;
     box-shadow: 0 0 0 3px rgba(0, 31, 63, 0.1);
 }
-/* Login Page Styles */
+
 .login-container {
     display: flex;
     justify-content: center;
@@ -156,25 +156,25 @@ textarea:focus {
     margin-bottom: 1.5rem;
 }
 
-.form-group {
-    margin-bottom: 1.5rem;
+.add-post-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+    padding: 2rem 0;
 }
 
-.form-group label {
-    display: block;
-    color: var(--navy);
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-}
-
-.btn-primary {
+.add-post-form {
+    background-color: var(--white);
+    padding: 2.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px var(--shadow);
     width: 100%;
-    padding: 0.75rem;
-    background-color: var(--navy);
-    border: none;
-    font-size: 1rem;
+    max-width: 600px;
 }
 
-.btn-primary:hover {
-    background-color: var(--blue);
+.add-post-form h2 {
+    color: var(--navy);
+    text-align: center;
+    margin-bottom: 1.5rem;
 }
