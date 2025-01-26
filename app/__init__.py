@@ -7,4 +7,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
 app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY', 'insecure-secret-key')  # Use environment variable
 db = SQLAlchemy(app)
 
-from app import routes, models
+# Import models here to avoid circular imports
+from app.models import Post, User
+from app import routes
